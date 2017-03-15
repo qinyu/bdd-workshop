@@ -12,20 +12,37 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
 
 public class StepDefs {
-  @Given("^open the home page $")
+
+  @Then("^open the login page successful$")
+  public void open_the_login_page_successful() throws Throwable {
+    assertThat(url(), containsString("wp-login.php"));
+  }
+
+  @When("^login with username \"([^\"]*)\" and password \"([^\"]*)\"$")
+  public void loginWithUsernameAndPassword(String user, String pass) throws Throwable {
+    $("#user_login").sendKeys(user);
+    $("#user_pass").sendKeys(pass);
+    $("#wp-submit").click();
+  }
+
+  @Then("^login failed$")
+  public void loginFailed() throws Throwable {
+    assertThat(url(), containsString("wp-admin"));
+
+  }
+
+  @Given("^open the home page$")
   public void open_the_home_page() throws Throwable {
     open("http://bdd-qinyu.v2.tenxapp.com:41922");
   }
 
-  @When("^click login $")
+  @When("^click login$")
   public void click_login() throws Throwable {
     $(By.linkText("Log in")).click();
   }
 
-  @Then("^open the login page successful$")
-  public void open_the_login_page_successful() throws Throwable {
-    assertThat(url(), containsString("login.php"));
+  @Then("^login successfully$")
+  public void loginSuccessfully() throws Throwable {
+    assertThat(url(), containsString("wp-admin"));
   }
-
-
 }

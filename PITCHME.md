@@ -16,7 +16,12 @@ Practice cucumber-java and selenide(selenium)
 1. "Hello World"
 2. Finish First Feature Test
 3. Test Report
-4. Add more feartures
+4. Add more "Happy" feartures
+5. Add other features
+6. Refactor
+7. Tags
+8. Hooks
+9. @CucumberOptions
 
 ---
 
@@ -148,27 +153,31 @@ com.codeborne:selenide:4.3
 ```java
 import static com.codeborne.selenide.Selenide.*;
 
-open(String url); // Navigate to webpage
-$(By.linkText(String text)).click() // Find web element by its text and click on it
-title(); // Return current page's title 
-url(); // Return current page's url
+// Navigate to webpage
+open(String url); 
+// Find web element by its text and click on it
+$(By.linkText(String text)).click() 
+// Return current page's title 
+title(); 
+// Return current page's url
+url(); 
 ```
 
 ```java
 @Given("^open the home page$")
-  public void open_the_home_page() throws Throwable {
+public void open_the_home_page() throws Throwable {
     open("http://bdd-qinyu.v2.tenxapp.com:41922");
-  }
+}
 
-  @When("^click login$")
-  public void click_login() throws Throwable {
+@When("^click login$")
+public void click_login() throws Throwable {
     $(By.linkText("Log in")).click();
-  }
+}
 
-  @Then("^open the login page successful$")
-  public void open_the_login_page_successful() throws Throwable {
+@Then("^open the login page successful$")
+public void open_the_login_page_successful() throws Throwable {
     assertThat(url(), containsString("login.php"));
-  }
+}
 ```
 <!-- .element: class="fragment" -->
 
@@ -201,7 +210,91 @@ mvn test -Dselenide.browser="chrome" -Dcucumber.options="--plugin html:target/cu
 
 ---
 
-# Add More Features
+# Add More "Happy" Features
+
++++
+
+### 1. Add login success feature
+```gherkin
+Scenario: Login WordPress successfully
+    Given open the home page
+    When click login
+    When login with username "admin" and password "admin123" 
+    Then login successfully
+```
+<!-- .element: class="fragment" -->
+
++++
+
+### 2. Run test and watch the output
+```sh
+mvn test -Dselenide.browser="chrome"
+```
+or  <!-- .element: class="fragment" -->
+```sh
+mvn test -Dcucumber.options="--dry-run"
+```
+<!-- .element: class="fragment" -->
+
++++
+
+### 3. Copy Step Definition snippets from output
+
+> Or you can generate step definitions using IDE feature  <!-- .element: class="fragment" -->
+
+```java
+@When("^login with username \"([^\"]*)\" and password \"([^\"]*)\"$")
+public void loginWithUsernameAndPassword(String user, String pass) throws Throwable {
+    // Write code here that turns the phrase above into concrete actions
+    throw new PendingException();
+}
+
+@Then("^login successfully$")
+public void loginSuccessfully() throws Throwable {
+    // Write code here that turns the phrase above into concrete actions
+    throw new PendingException();
+}
+```
+
++++
+
+### 4. Implement Steps by Selenide
+```java
+import static com.codeborne.selenide.Selenide.*;
+
+// Find web element by jquery like cssSelector and click on it
+$(String cssSelector).click() 
+// Find web element by jquery like cssSelector and input characters
+$(String cssSelector).sendKeys(CharSequence charSequence) 
+```
+
+```java
+@When("^login with username \"([^\"]*)\" and password \"([^\"]*)\"$")
+public void loginWithUsernameAndPassword(String user, String pass) throws Throwable {
+    $("#user_login").sendKeys(user);
+    $("#user_pass").sendKeys(pass);
+    $("#wp-submit").click();
+}
+
+@Then("^login successfully$")
+public void loginSuccessfully() throws Throwable {
+    assertThat(url(), containsString("wp-admin"));
+}
+```
+<!-- .element: class="fragment" -->
+
++++
+
+### 5. Run test and watch the output
+
+---
+
+# Add other features
+
++++
+
+
+
 
 
 
