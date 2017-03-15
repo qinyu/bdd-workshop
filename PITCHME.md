@@ -25,9 +25,9 @@ Practice cucumber-java and selenide(selenium)
 +++
 
 ### 0. Go throuth SUT(Wordpress Blog)
-http://bdd-qinyu.v2.tenxapp.com:41922
+http://bdd-qinyu.v2.tenxapp.com:41922  
 User: admin  
-Pass: 123456 
+Pass: 123456  
 
 +++ 
 
@@ -35,6 +35,7 @@ Pass: 123456
 * info.cukes:cucumber-java:1.2.5
 * info.cukes:cucumber-junit:1.2.5
 * junit:junit:4.12
+
 ```xml
 <dependency>
     <groupId>info.cukes</groupId>
@@ -95,7 +96,8 @@ mvn test
 
 +++
 
-1. Create a new java file "MySetpDefs.java" with following snippets from console output
+### 1. Create a new java file "MySetpDefs.java" with following snippets from console output
+
 ```java
 @Given("^open the home page$")
 public void open_the_home_page() throws Throwable {
@@ -118,15 +120,16 @@ public void open_the_login_page_successful() throws Throwable {
 
 +++
 
-2. Run test and watch the output
+### 2. Run test and watch the output
 ```sh
 mvn test
 ```
 
 +++
 
-3. Add **Selenide** dependency
-com.codeborne:selenide:4.3
+### 3. Add **Selenide** dependency
+com.codeborne:selenide:4.3  
+
 ```xml
 <dependency>
     <groupId>com.codeborne</groupId>
@@ -140,7 +143,8 @@ com.codeborne:selenide:4.3
 +++
 
 <!--hamcrest-->
-4. [Quick Start](http://selenide.org/quick-start.html) with **Selenide**
+## 4. [Quick Start](http://selenide.org/quick-start.html) with **Selenide**
+
 ```java
 import static com.codeborne.selenide.Selenide.*;
 
@@ -149,6 +153,7 @@ $(By.linkText(String text)).click() // Find web element by its text and click on
 title(); // Return current page's title 
 url(); // Return current page's url
 ```
+
 ```java
 @Given("^open the home page$")
   public void open_the_home_page() throws Throwable {
@@ -175,7 +180,8 @@ url(); // Return current page's url
 
 +++
 
-5. Run test and watch the output
+### 5. Run test and watch the output
+
 ```sh
 # Selenide starts firefox by default, change to chorme by using -Dselenide.browser="chrome" argument
 mvn test -Dselenide.browser="chrome"
@@ -187,7 +193,7 @@ mvn test -Dselenide.browser="chrome"
 
 +++
 
-Run test and watch the output
+### Run test and watch the output
 ```sh
 # You can list plugin options by using arguement -Dcucumber.options="--help"
 mvn test -Dselenide.browser="chrome" -Dcucumber.options="--plugin html:target/cucumber"
