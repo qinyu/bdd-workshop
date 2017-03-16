@@ -18,10 +18,11 @@ Practice cucumber-java and selenide(selenium)
 3. Test Report
 4. Add more "Happy" feartures
 5. Add other features
-6. Refactor
-7. Tags
-8. Hooks
-9. @CucumberOptions
+6. Hooks
+7. Waits
+8. Refactor
+9. Tags
+10. @CucumberOptions
 
 ---
 
@@ -287,11 +288,294 @@ public void loginSuccessfully() throws Throwable {
 
 ### 5. Run test and watch the output
 
+```sh
+mvn test -Dselenide.browser="chrome"
+```
+
+
 ---
 
 # Add other features
 
 +++
+
+### 1. Add login failure feature and Stef Definitions
+
+```gherkin
+  Scenario: login WordPress failed
+    Given open the home page
+    When click login
+    When login with username "admin" and password "1234567"
+    Then login failed with message "ERROR: The password you entered for the username admin is incorrect. Lost your password?"
+```
+<!-- .element: class="fragment" -->
+
+```java
+  @Then("^login failed with message \"([^\"]*)\"$")
+  public void loginFailedWithMessage(String arg0) throws Throwable {
+    // Write code here that turns the phrase above into concrete actions
+    throw new PendingException();
+  }
+```
+<!-- .element: class="fragment" -->
+
++++
+
+### 2. Implement Step
+```java
+import static com.codeborne.selenide.Condition.*;
+
+// Assert that web element has expected text
+$(String cssSelector).shouldHave(text(String expectedText))
+```
+
+```java
+  @Then("^login failed with message \"([^\"]*)\"$")
+  public void loginFailedWithMessage(String errorMessage) throws Throwable {
+    $("#login_error").shouldHave(text(errorMessage));
+  }
+```
+<!-- .element: class="fragment" -->
+
++++
+
+### 3. Run test and watch the output
+
+```sh
+mvn test -Dselenide.browser="chrome"
+```
+
++++
+
+### 4. Oops!!
+```java
+Caused by: NoSuchElementException: no such element: Unable to locate element: {"method":"link text","selector":"Log in"}
+        at com.codeborne.selenide.impl.WebElementSource.createElementNotFoundError(WebElementSource.java:31)
+        at com.codeborne.selenide.impl.ElementFinder.createElementNotFoundError(ElementFinder.java:82)
+        at com.codeborne.selenide.impl.WebElementSource.checkCondition(WebElementSource.java:59)
+        at com.codeborne.selenide.impl.WebElementSource.findAndAssertElementIsVisible(WebElementSource.java:72)
+        at com.codeborne.selenide.commands.Click.execute(Click.java:14)
+        at com.codeborne.selenide.commands.Click.execute(Click.java:11)
+```
+<!-- .element: class="fragment" -->
+> Screenshots and source in `build/reports/tests`
+<!-- .element: class="fragment" -->
+
+---
+
+# Hooks
+“Setup” and "Teardown" for each **Scenario**
+
++++
+
+### 1. Create `Hooks.java`
+```java
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
+
+public class Hooks {
+  @Before
+  public void beforeScenario() {
+  }
+
+  @After
+  public void afterScenario() {
+  }
+}
+```
+
++++
+
+### 2. Implement hooks
+```java
+import static com.codeborne.selenide.WebDriverRunner.*;
+import com.codeborne.selenide.Configuration;
+
+// Close browser
+closeWebDriver();
+
+// Wait how many milliseconds before test fails
+Configuration.timeout = 6000;
+// Which browser to use
+Configuration.browser = "chrome";
+```
+```java
+  @Before
+  public void beforeScenario() {
+    Configuration.timeout = 6000;
+    Configuration.browser = "chrome";
+  }
+
+  @After
+  public void afterScenario() {
+    closeWebDriver();
+  }
+```
+<!-- .element: class="fragment" -->
+
++++
+
+### 3. Run test and watch the output
+
+```sh
+mvn test
+```
+
+---
+
+# Waits
+Sometimes tests are flaky
+
++++
+
+### 1. Implicict Wait
+```java
+import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Condition.*;
+
+// Wait until given element meet given conditions.
+$(String cssSelector).waitUntil(Condition condition, long millisecondsTimeout);
+// Wait until given element does not meet given conditions.
+$(String cssSelector).waitWhile(Condition condition, long millisecondsTimeout);
+
+Wait().until(Predicate<T> isTrue);
+```
+```java
+$("#user_login").waitUntil(appear, 8000).sendKeys(user);
+```
+
++++
+
+### 2. Explicit Wait
+```java
+import static com.codeborne.selenide.Selenide.*;
+
+sleep(2000);
+```
+
++++
+
+### 3. Run test and watch the output
+
+```sh
+mvn test
+```
+
+---
+
+# Refactor 
+Code smells
+
++++
+
+### 1. Duplicated Code
+```gherkin
+  Scenario: Successful open login page
+    Given open the home page
+    When click login
+    ...
+
+  Scenario: login WordPress Successfully
+    Given open the home page
+    When click login
+    ...
+
+  Scenario: login WordPress failed
+    Given open the home page
+    When click login
+    ...
+```
+<!-- .element: class="fragment" -->
+
++++
+
+### 2. Feature backagroud
+
+```gherkin
+Feature: Login WordPress
+  Background:
+    Given open the home page
+    When click login
+
+  Scenario: Successful open login page
+    Then open the login page successful
+
+  Scenario: login WordPress Successfully
+    When login with username "admin" and password "123456"
+    Then login successfully
+
+  Scenario: login WordPress failed
+    When login with username "admin" and password "1234567"
+    Then login failed with message "ERROR: The password you entered for the username admin is incorrect. Lost your password?"
+```
+
++++
+
+### 3. Run test and watch the output
+
+```sh
+mvn test
+```
+
++++
+
+### 4. Add more fail scenarios
+```gherkin
+```
+<!-- .element: class="fragment" -->
+
++++
+
+### 5. Run test and watch the output
+
+```sh
+mvn test
+```
+
++++
+
+### 6. Duplicated code
+
+```gherkin
+Scenario: login WordPress failed wrong pass
+    When login with username "<...>" and password "<..>"
+    Then login failed with message "<...>"
+
+Scenario: login WordPress failed empty pass
+    When login with username "<...>" and password "<..>"
+    Then login failed with message "<...>"
+
+Scenario: login WordPress failed empty user
+    When login with username "<...>" and password "<..>"
+    Then login failed with message "<...>"
+```
+<!-- .element: class="fragment" -->
+
++++
+
+### 7. Scenario Outline
+```gherkin
+Scenario Outline: login WordPress failed wrong pass
+    When login with username "<user>" and password "<pass>"
+    Then login failed with message "<error>"
+    Examples:
+
+```
+
++++
+
+### 5. Run test and watch the output
+
+```sh
+mvn test
+```
+
+
+
+
+
+
+
 
 
 
