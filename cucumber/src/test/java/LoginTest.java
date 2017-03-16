@@ -7,7 +7,7 @@ import org.junit.runner.RunWith;
 @CucumberOptions(
     features = "src/test/resources",
     glue = "steps",
-    plugin = {"pretty" , "html:target/cucumber"},
+//    plugin = {"pretty" , "html:target/cucumber"},
     snippets = SnippetType.CAMELCASE,
     tags = {"@smoke", "~@happy"}
 )

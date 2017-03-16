@@ -6,9 +6,9 @@ Practice cucumber-java and selenide(selenium)
 
 # Prerequisites
 1. JDK installed
-2. Maven installed and mavenCental can be reached
+2. Maven installed and [mavenCental](https://search.maven.org/) can be reached
 3. IDE with Cucumber and Maven plugin installed(Intellij IDEA Community Edition is recommended)
-4. Browser and corresponding driver installed 
+4. Browser and corresponding driver installed
 
 ---
 
@@ -32,6 +32,8 @@ Practice cucumber-java and selenide(selenium)
 ---
 
 # "Hello World"
+
+Create cucumber project
 
 +++
 
@@ -105,6 +107,8 @@ mvn test
 
 # Finish First Fearture Test
 
+Playing with Selenide/Selenium
+
 +++
 
 ### 1. Create a new java file "MySetpDefs.java" with following snippets from console output
@@ -153,8 +157,7 @@ com.codeborne:selenide:4.3
 
 +++
 
-<!--hamcrest-->
-## 4. [Quick Start](http://selenide.org/quick-start.html) with **Selenide**
+### 4. [Quick Start](http://selenide.org/quick-start.html) with **Selenide**
 
 ```java
 import static com.codeborne.selenide.Selenide.*;
@@ -189,13 +192,25 @@ public void open_the_login_page_successful() throws Throwable {
 
 +++
 
-[HAMCHREST](https://code.google.com/archive/p/hamcrest/wikis/Tutorial.wiki)
+### 5. [HAMCHREST](https://code.google.com/archive/p/hamcrest/wikis/Tutorial.wiki)
+
+```java
+// JUnit 4 for equals check
+assertEquals(expected, actual);
+// Hamcrest for equals check
+assertThat(actual, is(equalTo(expected)));
+
+// JUnit 4 for not equals check
+assertFalse(expected.equals(actual));
+// Hamcrest for not equals check
+assertThat(actual, is(not(equalTo(expected))));
+```
 
 <!--Chrome Web Developer Tools-->
 
 +++
 
-### 5. Run test and watch the output
+### 6. Run test and watch the output
 
 ```sh
 # Selenide starts firefox by default, change to chorme by using -Dselenide.browser="chrome" argument
@@ -208,10 +223,58 @@ mvn test -Dselenide.browser="chrome"
 
 +++
 
-### Run test and watch the output
+### 1. Run test and watch the output
 ```sh
 # You can list plugin options by using arguement -Dcucumber.options="--help"
 mvn test -Dselenide.browser="chrome" -Dcucumber.options="--plugin html:target/cucumber"
+mvn test -Dselenide.browser="chrome" -Dcucumber.options="--plugin html:target/cucumber --plugin json:target/cucumber.json"
+```
+
++++
+
+### 2. Cucumber Reports
+```xml
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>net.masterthought</groupId>
+                <artifactId>maven-cucumber-reporting</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>execution</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <projectName>cucumber-jvm-example</projectName>
+                            <outputDirectory>${project.build.directory}/cucumber</outputDirectory>
+                            <cucumberOutput>${project.build.directory}/cucumber.json</cucumberOutput>
+                            <parallelTesting>false</parallelTesting>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependency>
+        <groupId>net.masterthought</groupId>
+        <artifactId>maven-cucumber-reporting</artifactId>
+        <version>3.5.0</version>
+    </dependency>
+```
+
++++
+
+### 3. Generate Cucumber Reports
+```sh
+mvn verify  -Dselenide.browser="chrome" -Dcucumber.options="--plugin html:target/cucumber --plugin json:target/cucumber.json"
 ```
 
 ---
@@ -302,6 +365,8 @@ mvn test -Dselenide.browser="chrome"
 
 # Add other features
 
+"Unhappy" paths
+
 +++
 
 ### 1. Add login failure feature and Stef Definitions
@@ -369,6 +434,7 @@ Caused by: NoSuchElementException: no such element: Unable to locate element: {"
 ---
 
 # Hooks
+
 “Setup” and "Teardown" for each **Scenario**
 
 +++
@@ -429,6 +495,7 @@ mvn test
 ---
 
 # Waits
+
 Sometimes tests are flaky
 
 +++
