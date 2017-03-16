@@ -521,6 +521,13 @@ mvn test
 
 ### 4. Add more fail scenarios
 ```gherkin
+Scenario: login WordPress failed invalid username
+    When login with username "qinyu" and password "123456"
+    Then login failed with message "ERROR: Invalid username. Lost your password?"
+
+Scenario: login WordPress failed empty pass
+    When login with username "admin" and password ""
+    Then login failed with message "ERROR: The password field is empty."
 ```
 <!-- .element: class="fragment" -->
 
@@ -541,11 +548,11 @@ Scenario: login WordPress failed wrong pass
     When login with username "<...>" and password "<..>"
     Then login failed with message "<...>"
 
-Scenario: login WordPress failed empty pass
+Scenario: login WordPress failed invalid username
     When login with username "<...>" and password "<..>"
     Then login failed with message "<...>"
 
-Scenario: login WordPress failed empty user
+Scenario: login WordPress failed empty pass
     When login with username "<...>" and password "<..>"
     Then login failed with message "<...>"
 ```
@@ -555,11 +562,14 @@ Scenario: login WordPress failed empty user
 
 ### 7. Scenario Outline
 ```gherkin
-Scenario Outline: login WordPress failed wrong pass
-    When login with username "<user>" and password "<pass>"
+Scenario Outline: login WordPress failed
+    When login with username "<user>" and password "<password>"
     Then login failed with message "<error>"
     Examples:
-
+      | user  | password | error                                                                                    |
+      | admin | 111111   | ERROR: The password you entered for the username admin is incorrect. Lost your password? |
+      | qinyu | 123456   | ERROR: Invalid username. Lost your password?                                             |
+      | admin |          | ERROR: The password field is empty.                                                      |
 ```
 
 +++
@@ -570,8 +580,47 @@ Scenario Outline: login WordPress failed wrong pass
 mvn test
 ```
 
+---
 
+# Tags
 
+Organize features and catrgorize scenarios
+
++++
+
+### 1. Try tags in features
+
+```gherkin
+Feature: Login WordPress
+  Background:
+    Given open the home page
+    When click login
+  
+  @happy @smoke
+  Scenario: Successful open login page
+    Then open the login page successful
+```
+
++++
+
+### 2. Run test and watch the output
+
+```sh
+mvn test -Dcucumber.options="--tags @smoke"
+```
+
++++
+
+### 3. Tag expressions
+```sh
+--tags @smoke --tags @happy # and
+--tags @smoke,@happy # or
+--tags ~@smoke # not
+```
+
+---
+
+# @CucumberOptions
 
 
 
