@@ -13,16 +13,21 @@ Practice cucumber-java and selenide(selenium)
 ---
 
 # Agenda
-1. "Hello World"
-2. Finish First Feature Test
-3. Test Report
-4. Add more "Happy" feartures
-5. Add other features
-6. Hooks
-7. Waits
-8. Refactor
-9. Tags
-10. @CucumberOptions
+* "Hello World"
+* Finish First Feature Test
+* Test Report
+* Add more "Happy" feartures
+* Add other features
+...
+
++++
+
+# Agenda(Cont.)
+* Hooks
+* Waits
+* Refactor
+* Tags
+* @CucumberOptions
 
 ---
 
@@ -621,6 +626,21 @@ mvn test -Dcucumber.options="--tags @smoke"
 ---
 
 # @CucumberOptions
+
+Other useful options
+
++++
+
+### Useful options
+```java
+@CucumberOptions(
+    features = "src/test/resources", // Where to find Features
+    glue = "steps", // Where to find step definitions
+    plugin = {"pretty" , "html:target/cucumber"}, // output format(s)
+    snippets = SnippetType.CAMELCASE, // Snippets' case when generated
+    tags = {"@smoke", "~@happy"} // Tags
+)
+```
 
 
 
