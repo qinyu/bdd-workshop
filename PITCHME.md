@@ -709,6 +709,133 @@ Other useful options
 )
 ```
 
+---
+
+# PageObjects
+
+* DRY
+* Encapsulation(hide details & separate changes)
+
+![page_object](https://martinfowler.com/bliki/images/pageObject/pageObject.png)
+
+https://martinfowler.com/bliki/PageObject.html
+
++++
+
+### 1. Classic PO
+```java
+public class LoginPage extends BasicPage {
+
+  @FindBy(id = "user_login")
+  WebElement userInput;
+  
+  @FindBy(id = "user_pass")
+  WebElement passInput;
+  
+  @FindBy(id = "wp-submit")
+  WebElement submitButton;
+
+  @FindBy(id = "login_error")
+  WebElement errorMessage;
+
+  public LoginPage(WebDriver driver) {
+    super(driver);
+  }
+
+  public void login(String user, String pass) {
+    userInput.sendKeys(user);
+    passInput.sendKeys(pass);
+    submitButton.click();
+  }
+
+  public WebElement getErrorMessage() {
+    return errorMessage;
+  }
+}
+```
+
++++
+
+### 1. Classic PO(Cont.)
+```java
+public class BasicPage {
+  protected WebDriver driver;
+
+  public BasicPage(WebDriver driver) {
+    this.driver = driver;
+    PageFactory.initElements(driver, this);
+  }
+}
+```
+
+* Inject element using `@FindBy` + `PageFactory`
+* No asssetions in classic PO
+
++++
+
+### 2. Classic PO cons
+
+* OOP Learning curve(Concepta, Design Patterns)
+* Bloated Code(Driver, FindBY...)
+* Complicated Inheritance(Coupled and Too many layered)
+* Diffcult to implement DSL
+* Certainty to refactor
+
++++
+
+### 3. Improve PO with Selenide
+```java
+public class Login {
+
+  private final SelenideElement userInput = $("#user_login");
+  private final SelenideElement passInput = $("#user_pass");
+  private final SelenideElement submitButton = $("#wp-submit");
+
+  public void login(String user, String pass) {
+    userInput.waitUntil(appear, 8000).sendKeys(user);
+    sleep(500);
+    passInput.sendKeys(pass);
+    submitButton.click();
+  }
+
+  public SelenideElement errorMessage() {
+    return $("#login_error");
+  }
+
+}
+```
+
+### 4. Or without PO
+```java
+public class Login {
+  public static void login(String user, String pass) {
+    $("#user_login").waitUntil(appear, 8000).sendKeys(user);
+    sleep(500);
+    $("#user_pass").sendKeys(pass);
+    $("#wp-submit").click();
+  }
+
+  public static SelenideElement errorMessage() {
+    return $("#login_error");
+  }
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
