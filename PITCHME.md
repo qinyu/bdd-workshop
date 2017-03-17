@@ -781,7 +781,7 @@ public class BasicPage {
 
 * OOP Learning curve(Concepta, Design Patterns)
 * Bloated Code(Driver, FindBY...)
-* Complicated Inheritance(Coupled and Too many layered)
+* Complicated Inheritance(Coupled and Too many layers)
 * Diffcult to implement DSL
 * Certainty to refactor
 
