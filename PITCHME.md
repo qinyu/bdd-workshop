@@ -28,6 +28,7 @@ Practice cucumber-java and selenide(selenium)
 * Refactor
 * Tags
 * @CucumberOptions
+* PageObjects
 
 ---
 
@@ -716,9 +717,12 @@ Other useful options
 * DRY
 * Encapsulation(hide details & separate changes)
 
+https://martinfowler.com/bliki/PageObject.html
+
++++
+
 ![page_object](https://martinfowler.com/bliki/images/pageObject/pageObject.png)
 
-https://martinfowler.com/bliki/PageObject.html
 
 +++
 
@@ -804,6 +808,7 @@ public class Login {
 
 }
 ```
++++
 
 ### 4. Or without PO
 ```java
